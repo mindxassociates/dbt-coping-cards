@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f6f7f4" />
+<title>DBT Coping Cards</title>
+<meta name="description" content="A clean, interactive collection of DBT coping cards. Search, save, copy, print, and export the cards that help most." />
+<style>
+:root{
+  --bg:#f6f7f4;--panel:#ffffff;--text:#18201d;--muted:#66706b;--line:#e4e8e4;
+  --accent:#365d54;--accent-soft:#e8f0ed;--star:#b98516;--shadow:0 8px 26px rgba(28,45,39,.07);
+  --radius:18px;--max:1180px;
+}
+[data-theme="dark"]{
+  --bg:#111513;--panel:#18201d;--text:#eef3f0;--muted:#aab4af;--line:#2a3530;
+  --accent:#91b9ad;--accent-soft:#22302b;--star:#f0c15d;--shadow:0 8px 26px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px)}
+.topbar-inner{max-width:var(--max);margin:auto;padding:12px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--accent);color:var(--bg);font-weight:800}
+.brand-text{font-weight:760;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.icon-btn,.action-btn,.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:9px 12px;display:inline-flex;align-items:center;gap:7px}
+.icon-btn:hover,.action-btn:hover,.chip:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
+.action-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.wrap{max-width:var(--max);margin:auto;padding:42px 20px 72px}
+.hero{display:grid;grid-template-columns:1.5fr .8fr;gap:24px;align-items:end;margin-bottom:26px}
+.eyebrow{font-size:.82rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:700}
+h1{font-size:clamp(2.2rem,5vw,4.4rem);line-height:.98;margin:9px 0 14px;letter-spacing:-.045em}
+.lead{max-width:720px;color:var(--muted);font-size:1.05rem;margin:0}
+.summary{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.summary strong{font-size:1.55rem;display:block}
+.summary span{color:var(--muted);font-size:.92rem}
+.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;margin-bottom:12px}
+.search{position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:13px 44px 13px 15px;outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.search .kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.78rem;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:2px 6px}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}.chip{white-space:nowrap;font-size:.9rem}.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:240px;transition:transform .16s ease,border-color .16s ease}
+.card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.card-head{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.badge{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.star{border:1px solid var(--line);background:transparent;color:var(--muted);font-size:.78rem;line-height:1;padding:7px 10px;border-radius:999px}
+.star:hover{background:var(--accent-soft);color:var(--accent)}
+.star.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
+.card h2{font-size:1.2rem;line-height:1.18;margin:9px 0 9px;letter-spacing:-.02em}
+.card .body{color:var(--muted);font-size:.94rem;white-space:pre-line;flex:1}
+.card .body b{color:var(--text)}
+.card-footer{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.mini{border:0;background:transparent;color:var(--muted);padding:5px 0;margin-right:10px;font-size:.86rem}.mini:hover{color:var(--accent)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:54px 10px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:999px;font-size:.88rem;transition:.2s;z-index:50}.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);display:flex;gap:18px;justify-content:space-between;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
+.footer a{text-decoration:none;color:var(--accent);font-weight:650}
+.safety{max-width:760px}
+@media(max-width:920px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.summary{max-width:280px}}
+@media(max-width:620px){.topbar-inner{align-items:flex-start}.brand-text{display:none}.actions{gap:6px}.icon-btn,.action-btn{padding:8px 10px;font-size:.84rem}.action-btn .label-hide{display:none}.wrap{padding:28px 14px 56px}.toolbar{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.card{min-height:0}.hero{margin-bottom:20px}h1{font-size:2.6rem}.summary{display:none}.kbd{display:none!important}}
+@media print{.topbar,.hero,.toolbar,.filter-row,.card-footer,.footer,.toast{display:none!important}body{background:#fff;color:#111}.wrap{max-width:none;padding:0}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.card{break-inside:avoid;box-shadow:none;border:1px solid #bbb;min-height:0}.card .body{color:#333}.star{display:none}}
+
+/* Visual system + motion */
+.hero{align-items:center}
+.hero-copy{position:relative;z-index:2}
+.hero-title-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hero-title-line .pill{font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line))}
+.hero-visual{position:relative;min-height:290px;display:grid;place-items:center;isolation:isolate;overflow:hidden;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at 30% 25%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 35%),linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--accent-soft) 52%,var(--panel)));box-shadow:var(--shadow)}
+.hero-visual:before,.hero-visual:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);opacity:.55;z-index:-1}
+.hero-visual:before{width:180px;height:180px;right:-55px;top:-55px;background:color-mix(in srgb,#d9a66b 42%,transparent);animation:drift 8s ease-in-out infinite alternate}
+.hero-visual:after{width:140px;height:140px;left:-48px;bottom:-48px;background:color-mix(in srgb,#84aebb 38%,transparent);animation:drift 10s ease-in-out infinite alternate-reverse}
+.demo-deck{width:min(270px,78%);height:188px;position:relative;perspective:900px}
+.demo-card{position:absolute;inset:0;border-radius:22px;padding:20px;background:var(--panel);border:1px solid var(--line);box-shadow:0 16px 44px rgba(24,32,29,.14);display:flex;flex-direction:column;justify-content:space-between;transform-origin:50% 110%;transition:transform .35s ease}
+.demo-card small{color:var(--muted);font-weight:800;letter-spacing:.09em;text-transform:uppercase}.demo-card strong{font-size:1.45rem;letter-spacing:-.035em}.demo-card p{margin:0;color:var(--muted);font-size:.9rem}
+.demo-card:nth-child(1){transform:rotate(-10deg) translate(-22px,9px);animation:cardFloat1 5.5s ease-in-out infinite}
+.demo-card:nth-child(2){transform:rotate(8deg) translate(24px,12px);animation:cardFloat2 6.4s ease-in-out infinite}
+.demo-card:nth-child(3){transform:translateY(-8px);animation:cardFloat3 5.9s ease-in-out infinite}
+.hero-visual:hover .demo-card:nth-child(1){transform:rotate(-15deg) translate(-42px,16px)}
+.hero-visual:hover .demo-card:nth-child(2){transform:rotate(13deg) translate(44px,18px)}
+.hero-visual:hover .demo-card:nth-child(3){transform:translateY(-19px) scale(1.025)}
+.orbit-dot{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 12%,transparent);animation:orbit 7s linear infinite}
+.orbit-dot.d2{width:7px;height:7px;animation-duration:10s;animation-direction:reverse;background:#c38e58}
+.demo-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 22px}
+.demo-step{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 15px;display:flex;align-items:center;gap:12px;min-height:76px;box-shadow:0 5px 18px rgba(28,45,39,.04)}
+.demo-step:after{content:"";position:absolute;inset:auto -30% -80% 35%;height:110px;border-radius:50%;background:color-mix(in srgb,var(--accent) 8%,transparent);transition:transform .25s ease}.demo-step:hover:after{transform:scale(1.45)}
+.step-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;background:var(--accent-soft);color:var(--accent)}
+.step-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.demo-step strong{display:block;font-size:.92rem}.demo-step span{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.card{overflow:hidden;animation:cardIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:min(calc(var(--i,1) * 18ms),300ms)}
+.card:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--accent),#b98f5f,#789fab);opacity:.64;transform:scaleX(.3);transform-origin:left;transition:transform .25s ease,opacity .25s ease}
+.card:hover:before{transform:scaleX(1);opacity:1}
+.card.flash{animation:flashCard .9s ease both}
+.card.flash:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 2px var(--accent);animation:flashRing .9s ease both}
+.action-btn.shuffle{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 26%,var(--line))}
+.saved-pop{animation:savedPop .38s ease}
+@keyframes drift{to{transform:translate(18px,16px) scale(1.08)}}
+@keyframes orbit{from{transform:rotate(0deg) translateX(128px) rotate(0deg)}to{transform:rotate(360deg) translateX(128px) rotate(-360deg)}}
+@keyframes cardFloat1{50%{transform:rotate(-8deg) translate(-18px,1px)}}
+@keyframes cardFloat2{50%{transform:rotate(6deg) translate(19px,3px)}}
+@keyframes cardFloat3{50%{transform:translateY(-15px)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes flashCard{0%,100%{transform:none}35%{transform:translateY(-5px) scale(1.012)}}
+@keyframes flashRing{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+@keyframes savedPop{50%{transform:scale(1.13)}}
+@media(max-width:920px){.hero-visual{min-height:240px}.demo-deck{height:160px}.demo-card{padding:16px}.demo-card strong{font-size:1.2rem}}
+@media(max-width:720px){.demo-strip{grid-template-columns:1fr}.demo-step{min-height:64px}.hero-visual{min-height:220px}.hero{gap:18px}.orbit-dot{display:none}}
+@media(max-width:620px){.hero-visual{min-height:195px;border-radius:22px}.demo-deck{height:142px;width:72%}.demo-card{padding:14px;border-radius:18px}.demo-card p{font-size:.78rem}.demo-card strong{font-size:1.05rem}.hero-title-line .pill{display:none}.action-btn.shuffle{order:4}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+
+/* Modern friendly UI refresh */
+:root{
+  --bg:#f4f7f6;--panel:#ffffff;--panel-2:#f8faf9;--text:#17221e;--muted:#66736e;--line:#dde6e2;
+  --accent:#2f6f61;--accent-2:#6a9f91;--accent-soft:#e8f3ef;--warm:#f2b36c;--lav:#a695c7;
+  --shadow:0 12px 36px rgba(31,63,54,.08);--shadow-lg:0 24px 70px rgba(31,63,54,.12);--radius:22px;
+}
+[data-theme="dark"]{
+  --bg:#0f1513;--panel:#17201d;--panel-2:#1c2723;--text:#edf5f2;--muted:#a6b5af;--line:#2a3833;
+  --accent:#8fc5b5;--accent-2:#6ca08f;--accent-soft:#20332c;--warm:#dca263;--lav:#a99bc9;
+  --shadow:0 14px 40px rgba(0,0,0,.26);--shadow-lg:0 28px 76px rgba(0,0,0,.32)
+}
+body{background:
+  radial-gradient(circle at 8% 0%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 24rem),
+  radial-gradient(circle at 96% 8%,color-mix(in srgb,var(--warm) 10%,transparent),transparent 22rem),var(--bg)}
+.topbar{border-bottom:0;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(22px) saturate(145%)}
+.topbar-inner{padding:14px 20px}
+.brand-mark{width:38px;height:38px;border-radius:14px;background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 68%,#173c33));box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 24%,transparent);font-size:.8rem}
+.brand-text{font-size:.98rem;letter-spacing:-.01em}
+.icon-btn,.action-btn,.chip{min-height:40px;border-color:color-mix(in srgb,var(--line) 88%,transparent);box-shadow:0 2px 8px rgba(30,55,48,.035);transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.icon-btn:hover,.action-btn:hover,.chip:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(30,55,48,.075)}
+.action-btn.primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 72%,#1f483f));box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 22%,transparent)}
+.wrap{padding-top:30px}
+.hero{gap:30px;margin-bottom:20px;padding:28px;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:32px;background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 93%,transparent),color-mix(in srgb,var(--accent-soft) 32%,var(--panel)));box-shadow:var(--shadow-lg);overflow:hidden;position:relative}
+.hero:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:18%;top:-210px;background:color-mix(in srgb,var(--accent) 12%,transparent);filter:blur(3px)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);box-shadow:0 5px 16px rgba(31,63,54,.05);font-size:.72rem}
+h1{font-size:clamp(2.35rem,5vw,4.65rem);line-height:.95;margin-top:14px}
+.lead{font-size:1.02rem;line-height:1.7;max-width:650px}
+.hero-visual{min-height:270px;border:0;box-shadow:none;background:transparent}
+.demo-card{border-radius:24px;box-shadow:0 18px 46px rgba(27,52,45,.15);border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+.demo-card:nth-child(1){background:linear-gradient(160deg,var(--panel),color-mix(in srgb,var(--lav) 12%,var(--panel)))}
+.demo-card:nth-child(2){background:linear-gradient(160deg,var(--panel),color-mix(in srgb,var(--warm) 12%,var(--panel)))}
+.demo-card:nth-child(3){background:linear-gradient(160deg,var(--panel),color-mix(in srgb,var(--accent) 11%,var(--panel)))}
+.quick-needs{margin:18px 0 20px;padding:18px;border:1px solid var(--line);border-radius:24px;background:color-mix(in srgb,var(--panel) 94%,transparent);box-shadow:var(--shadow)}
+.quick-needs-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:13px}
+.quick-needs h2{margin:0;font-size:1.08rem;letter-spacing:-.015em}.quick-needs p{margin:2px 0 0;color:var(--muted);font-size:.86rem}
+.need-row{display:flex;gap:9px;overflow-x:auto;padding:2px 1px 4px;scrollbar-width:none}.need-row::-webkit-scrollbar{display:none}
+.need{white-space:nowrap;border:1px solid var(--line);background:var(--panel-2);color:var(--text);padding:10px 13px;border-radius:15px;font-weight:700;font-size:.86rem;display:inline-flex;align-items:center;gap:8px;transition:.18s}
+.need:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 42%,var(--line));background:var(--accent-soft)}
+.need-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}.need:nth-child(2) .need-dot{background:#d09a61}.need:nth-child(3) .need-dot{background:#8a80b4}.need:nth-child(4) .need-dot{background:#7397ab}.need:nth-child(5) .need-dot{background:#bf7e80}
+.demo-strip{gap:10px}.demo-step{border-radius:20px;padding:14px 16px;background:color-mix(in srgb,var(--panel) 97%,transparent);box-shadow:0 8px 24px rgba(31,63,54,.045)}
+.step-icon{width:40px;height:40px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto}
+.toolbar{position:sticky;top:72px;z-index:12;padding:10px;margin:16px 0 8px;border-radius:20px;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(18px);border:1px solid color-mix(in srgb,var(--line) 75%,transparent)}
+.search input{min-height:46px;border-radius:15px;padding-left:44px;background:var(--panel)}
+.search:before{content:"";position:absolute;left:15px;top:50%;width:17px;height:17px;transform:translateY(-50%);background:currentColor;color:var(--muted);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") center/contain no-repeat;opacity:.75;pointer-events:none}
+.filter-row{padding:6px 1px 16px}.chip{background:var(--panel);border-radius:14px;padding:9px 12px}.chip.active{box-shadow:0 7px 18px color-mix(in srgb,var(--accent) 18%,transparent)}
+.grid{gap:18px}.card{border-radius:24px;padding:20px;min-height:250px;box-shadow:0 8px 28px rgba(31,63,54,.055);border-color:color-mix(in srgb,var(--line) 88%,transparent);background:linear-gradient(165deg,var(--panel),color-mix(in srgb,var(--panel-2) 65%,var(--panel)));transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,border-color .22s ease}
+.card:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(31,63,54,.11)}
+.card:before{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--warm),var(--lav));opacity:.72}
+.badge{font-size:.7rem;letter-spacing:.07em;padding:6px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);text-transform:none}
+.star{border-radius:12px;padding:7px 10px;font-weight:750;background:var(--panel-2)}
+.card h2{font-size:1.24rem;margin:14px 0 10px}.card .body{line-height:1.6}
+.card-footer{border-top:0;margin-top:12px;padding-top:8px}.mini{padding:7px 10px;border-radius:10px;background:transparent;margin-right:2px}.mini:hover{background:var(--accent-soft)}
+.summary{border-radius:20px}
+.footer{margin-top:56px;padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--panel);align-items:center}
+.mobile-dock{display:none}
+@media(max-width:760px){
+ .wrap{padding:18px 12px 88px}.topbar-inner{padding:10px 12px}.actions .action-btn:not(#favoritesBtn),.actions .icon-btn:not(#themeBtn){display:none}.brand-text{display:block;font-size:.9rem}
+ .hero{padding:20px;border-radius:26px}.hero-visual{min-height:190px}.quick-needs{padding:14px;border-radius:20px}.quick-needs-head{align-items:flex-start}.demo-strip{display:none}
+ .toolbar{top:60px;padding:8px;border-radius:17px;grid-template-columns:1fr auto}.toolbar>div:last-child{display:none}.filter-row{margin-top:2px}.grid{grid-template-columns:1fr}.card{padding:18px;border-radius:21px;min-height:0}.card:hover{transform:none}
+ .mobile-dock{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:10px;right:10px;bottom:10px;z-index:40;padding:7px;border-radius:19px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(22px);border:1px solid var(--line);box-shadow:0 18px 50px rgba(20,38,33,.2)}
+ .dock-btn{border:0;background:transparent;color:var(--muted);border-radius:13px;padding:8px 5px;font-size:.72rem;font-weight:700;display:grid;place-items:center;gap:3px}.dock-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}.dock-btn.active,.dock-btn:hover{background:var(--accent-soft);color:var(--accent)}
+}
+@media(max-width:440px){h1{font-size:2.55rem}.lead{font-size:.95rem}.hero-visual{min-height:165px}.demo-deck{height:128px;width:74%}.demo-card{padding:12px}.quick-needs-head p{display:none}.toolbar{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="brand-mark">DBT</div><div class="brand-text">DBT Coping Cards</div></div>
+    <div class="actions">
+      <button class="action-btn" id="favoritesBtn" title="Show saved cards"><span class="label-hide">Saved</span> <span id="favCount">0</span></button>
+      <button class="action-btn" id="copyFavBtn" title="Copy saved cards">Copy saved</button>
+      <button class="action-btn primary" id="exportFavBtn" title="Export saved cards as a clean HTML file">Export saved</button>
+      <a class="icon-btn" href="zh/" aria-label="Chinese version" style="text-decoration:none">中文</a><button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg></button>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Interactive DBT skills library</div>
+      <div class="hero-title-line"><h1>DBT Coping Cards</h1><span class="pill">60 cards</span></div>
+      <p class="lead">Turn DBT skills into something you can reach for quickly: find what fits the moment, save the cards that work for you, and export a personal coping deck.</p>
+    </div>
+    <div class="hero-visual" aria-label="Animated preview of DBT coping cards">
+      <span class="orbit-dot"></span><span class="orbit-dot d2"></span>
+      <div class="demo-deck" aria-hidden="true">
+        <div class="demo-card"><small>Interpersonal</small><strong>DEAR MAN</strong><p>Ask clearly while staying focused and flexible.</p></div>
+        <div class="demo-card"><small>Mindfulness</small><strong>Wise Mind</strong><p>Bring emotion and reason together for a wiser next step.</p></div>
+        <div class="demo-card"><small>Distress tolerance</small><strong>STOP</strong><p>Pause first. Observe. Then choose how to proceed.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="quick-needs" aria-label="Quick skill suggestions">
+    <div class="quick-needs-head"><div><h2>What do you need right now?</h2><p>Choose a feeling or goal to jump to a useful set of cards.</p></div></div>
+    <div class="need-row">
+      <button class="need" data-need="Anxiety"><span class="need-dot"></span>Calm anxiety</button>
+      <button class="need" data-need="Distress Tolerance"><span class="need-dot"></span>Get through a hard moment</button>
+      <button class="need" data-need="Relationships"><span class="need-dot"></span>Handle a conversation</button>
+      <button class="need" data-need="Grounding"><span class="need-dot"></span>Come back to the present</button>
+      <button class="need" data-need="Self-Compassion"><span class="need-dot"></span>Be kinder to myself</button>
+    </div>
+  </section>
+  <section class="demo-strip" aria-label="How to use DBT Coping Cards">
+    <div class="demo-step"><div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg></div><div><strong>Find what fits the moment</strong><span>Search or filter by skill</span></div></div>
+    <div class="demo-step"><div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"></path></svg></div><div><strong>Save the cards that work</strong><span>Build your personal coping deck</span></div></div>
+    <div class="demo-step"><div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m8 7 4-4 4 4"></path><path d="M5 13v7h14v-7"></path></svg></div><div><strong>Copy, print, or export</strong><span>Keep the useful cards close</span></div></div>
+  </section>
+
+  <section class="toolbar" aria-label="Search and sort coping cards">
+    <div class="search"><input id="searchInput" type="search" placeholder="Search: anxiety, boundaries, Wise Mind…" autocomplete="off"/><span class="kbd">/</span></div>
+    <div style="display:flex;gap:8px"><button class="action-btn shuffle" id="shuffleBtn">Try a card</button><button class="action-btn" id="clearBtn">Clear</button></div>
+  </section>
+  <div class="filter-row" id="filters"></div>
+  <div class="results-meta" style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin:2px 2px 14px;color:var(--muted);font-size:.92rem"><span id="summaryText">Browse the full collection</span><span id="visibleCount">0 cards</span></div>
+  <section class="grid" id="cardGrid" aria-live="polite"></section>
+
+  <footer class="footer">
+    <div class="safety">These cards are for skills practice and psychoeducation. If you may act on thoughts of harming yourself or someone else, seek immediate in-person help or emergency support.</div>
+    <div>Developed by <a href="https://mindx.us/" target="_blank" rel="noopener">Mind X Associates</a></div>
+  </footer>
+</main>
+<nav class="mobile-dock" aria-label="Quick actions">
+  <button class="dock-btn" id="dockSaved" type="button"><svg viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></svg><span>Saved</span></button>
+  <button class="dock-btn" id="dockRandom" type="button"><svg viewBox="0 0 24 24"><path d="M3 7h4l10 10h4"/><path d="m17 13 4 4-4 4"/><path d="M3 17h4l3-3"/><path d="m17 3 4 4-4 4"/></svg><span>Try one</span></button>
+  <button class="dock-btn" id="dockExport" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M5 13v7h14v-7"/></svg><span>Export</span></button>
+</nav>
+<div class="toast" id="toast"></div>
+<script>
+const cards = [
+{t:'Growth Mindset',c:'Perspective',b:'Shift from fixed conclusions toward learning language: “I’m still learning,” “I can try a different way,” and “mistakes help me learn.”'},
+{t:'Wise Mind',c:'Mindfulness',b:'Wise Mind is the middle ground between emotion and reason. Notice both, respect both, and choose from a centered place.'},
+{t:'Circle of Control',c:'Perspective',b:'When stress rises, sort the situation into what you cannot control, what you can influence, and what you can control most directly.'},
+{t:'DBT in a Nutshell',c:'DBT Basics',b:'DBT links thoughts, feelings, and behavior. Core skill areas include mindfulness, emotion regulation, distress tolerance, and interpersonal effectiveness.'},
+{t:'Reasonable Mind',c:'Mindfulness',b:'The logical, analytical state of mind. Useful for facts, planning, schedules, studying, and practical problem solving.'},
+{t:'Emotion Mind',c:'Mindfulness',b:'A state where emotions strongly shape thoughts and actions. Facts may feel less accessible and urges may match the intensity of the feeling.'},
+{t:'Wise Mind - The Overlap',c:'Mindfulness',b:'Wise Mind integrates reason and emotion. It often feels quiet, grounded, and intuitive rather than purely logical or purely emotional.'},
+{t:'Dialectical Thinking',c:'Perspective',b:'Practice holding two truths at once: “I am strong and vulnerable,” “I’m doing my best and I need to try harder,” “I can care and still set limits.”'},
+{t:'GIVE',c:'Relationships',b:'<b>G</b>entle. <b>I</b>nterested. <b>V</b>alidate. <b>E</b>asy manner. Use these when protecting the relationship is an important goal.'},
+{t:'Healing Is Not Linear',c:'Perspective',b:'Progress can include loops, setbacks, pauses, and returns. A difficult day does not erase prior movement.'},
+{t:'Box Breathing',c:'Grounding',b:'Breathe in, hold, breathe out, hold - using equal, comfortable counts. Let the rhythm give your attention one simple place to land.'},
+{t:'STOP',c:'Distress Tolerance',b:'<b>S</b>top. <b>T</b>ake a step back. <b>O</b>bserve what is happening inside and around you. <b>P</b>roceed mindfully.'},
+{t:'FAST',c:'Relationships',b:'<b>F</b>air. Avoid unnecessary <b>A</b>pologies. <b>S</b>tick to values. Be <b>T</b>ruthful. Use FAST to protect self-respect.'},
+{t:'Radical Acceptance Statements',c:'Acceptance',b:'Try statements such as: “This is what has happened.” “I cannot change the past.” “I can choose how I respond in this moment.”'},
+{t:'Radical Acceptance Practice',c:'Acceptance',b:'Slow the body, notice thoughts, name feelings, separate feelings from facts, and gently return to what is true right now.'},
+{t:'DEAR MAN',c:'Relationships',b:'<b>D</b>escribe. <b>E</b>xpress. <b>A</b>ssert. <b>R</b>einforce. Stay <b>M</b>indful. <b>A</b>ppear confident. <b>N</b>egotiate.'},
+{t:'ACCEPTS',c:'Distress Tolerance',b:'Distract skillfully with <b>A</b>ctivities, <b>C</b>ontributing, <b>C</b>omparisons, opposite <b>E</b>motions, <b>P</b>ushing away briefly, <b>T</b>houghts, and <b>S</b>ensations.'},
+{t:'Anxiety Coping Statements',c:'Anxiety',b:'Try: “I can slow down and breathe.” “This feeling is uncomfortable, not necessarily dangerous.” “I can allow this feeling to pass.”'},
+{t:'Trauma Triggers',c:'Awareness',b:'Triggers can include helplessness, loud sounds, certain places, reminders of loss, rejection, overwhelm, memories, criticism, or shame. Naming the trigger can create choice.'},
+{t:'TIPP',c:'Distress Tolerance',b:'Use body-based regulation when emotions are overwhelming: temperature change, brief intense movement, paced breathing, and paired muscle relaxation.'},
+{t:'Cycle of Anxiety',c:'Anxiety',b:'A feared situation can lead to scanning, worry, and avoidance. Avoidance may reduce anxiety short-term while strengthening fear over time.'},
+{t:'Your Self-Talk Matters',c:'Perspective',b:'The language you use with yourself can intensify shame or create room for problem solving. Aim for accurate, respectful, useful self-talk.'},
+{t:'Thoughts Are Not Facts',c:'Cognitive Skills',b:'A thought is a mental event, not proof. Notice it, name it, and check what evidence actually supports it.'},
+{t:'Healthy Coping Skills',c:'Self-Care',b:'Walk, rest, cry if needed, meditate, write, read, take a time-out, practice breathing, move your body, or speak to yourself kindly.'},
+{t:'Cognitive Biases to Remember',c:'Cognitive Skills',b:'Watch for confirmation bias, halo effect, hindsight bias, anchoring, bandwagon effects, false consensus, misinformation effects, choice-supporting bias, and self-serving bias.'},
+{t:'It’s Okay to Feel Your Feelings',c:'Acceptance',b:'Feelings are allowed. You can make room for an emotion without approving of every urge that comes with it.'},
+{t:'What If It All Works Out?',c:'Perspective',b:'When the mind rehearses worst-case outcomes, deliberately make space for neutral and positive possibilities too.'},
+{t:'What I Can Control',c:'Perspective',b:'Focus on your choices, effort, attitude, boundaries, learning, self-care, and how you respond. Release what belongs to weather, the past, other people, and uncertainty.'},
+{t:'5-4-3-2-1 Grounding',c:'Grounding',b:'Name 5 things you can see, 4 you can feel, 3 you can hear, 2 you can smell, and 1 you can taste.'},
+{t:'It’s Okay',c:'Self-Compassion',b:'It is okay to be yourself, make mistakes, say no, not know everything, ask for help, and have hard days.'},
+{t:'Boundary Setting Statements',c:'Relationships',b:'Examples: “I can help, but I cannot do this for you.” “I need time before we continue.” “I respect your view, and this decision is mine.”'},
+{t:'Note to Self',c:'Self-Compassion',b:'You are doing the best you can. Keep going.'},
+{t:'Anxiety Iceberg',c:'Anxiety',b:'Anxiety may show on the surface while underneath there can be embarrassment, rejection sensitivity, guilt, anger, loneliness, insomnia, irritability, worry, insecurity, and difficulty concentrating.'},
+{t:'Challenge Negative Thoughts',c:'Cognitive Skills',b:'Ask: Am I jumping to conclusions? What is a more helpful thought? What would I say to a friend? What are other possible outcomes? What action would help solve the problem?'},
+{t:'Self-Care Checklist',c:'Self-Care',b:'Hydrate, rest, walk, journal, meditate, stretch, make something, read, spend time with supportive people, declutter, reduce social media, and protect sleep.'},
+{t:'Things You Can Let Go Of',c:'Acceptance',b:'Practice releasing what you cannot control, perfectionism, self-comparison, the need to please everyone, fear of failure, and over-control.'},
+{t:'Be Kind. Be Brave. Be You.',c:'Self-Compassion',b:'A simple reminder to choose courage without abandoning kindness toward yourself.'},
+{t:'The Power of Yet',c:'Perspective',b:'Add “yet” to fixed conclusions: “I can’t do this yet.” “I don’t understand this yet.” “This doesn’t make sense yet.”'},
+{t:'Rainbow Grounding',c:'Grounding',b:'Take a breath and look around for colors in sequence. Let visual searching bring your attention back to the present environment.'},
+{t:'You Got This',c:'Self-Compassion',b:'A brief cue for persistence when the next step feels difficult.'},
+{t:'I Can’t Predict the Future',c:'Coping Statement',b:'I can’t predict the future, and I can be okay with that uncertainty.'},
+{t:'I Have Dealt With Difficulties Before',c:'Coping Statement',b:'I have handled difficult things before, and I can work through this one too.'},
+{t:'I Can Control My Response',c:'Coping Statement',b:'I may not be able to change the situation, but I can influence how I respond to it.'},
+{t:'I Can Be Flexible',c:'Coping Statement',b:'Not everything will go my way, and I can adjust rather than fight every change.'},
+{t:'I Care About Myself and Others',c:'Coping Statement',b:'My own needs matter, and caring for myself can coexist with caring for other people.'},
+{t:'Today Will Be What It Is',c:'Coping Statement',b:'I can meet today as it comes instead of requiring it to match a perfect plan.'},
+{t:'My Past Is Not My Future',c:'Coping Statement',b:'My past is part of my story, not a fixed prediction of what comes next.'},
+{t:'I Am Allowed to Heal',c:'Coping Statement',b:'Healing can take time. I am allowed to move at a sustainable pace.'},
+{t:'I Can Accept My Feelings',c:'Coping Statement',b:'I can allow my feelings to be present without solving the entire problem right now.'},
+{t:'Life Is Worth Living',c:'Coping Statement',b:'Pain can be present without erasing the possibility of meaning, connection, or a life worth living.'},
+{t:'Acceptance Is Not Weakness',c:'Coping Statement',b:'Acceptance means acknowledging reality clearly enough to choose the next effective step.'},
+{t:'My Needs and Wants Are Important',c:'Coping Statement',b:'My needs and wants deserve consideration, even when I also care about other people’s needs.'},
+{t:'My Thoughts Don’t Control My Life',c:'Coping Statement',b:'Thoughts can influence me, but they do not have to decide my actions.'},
+{t:'I Can Learn to Embrace Change',c:'Coping Statement',b:'Change can be uncomfortable and still become something I learn to navigate.'},
+{t:'I Choose My Agency',c:'Coping Statement',b:'I can focus on the choices available to me rather than giving all of my power to other people or circumstances.'},
+{t:'Some Days Won’t Go as Planned',c:'Coping Statement',b:'A disrupted plan is not a failed day. I can regroup and choose the next useful step.'},
+{t:'I Will Not Feel Guilty for Caring for Myself',c:'Coping Statement',b:'Self-care is not a moral failure. I can take care of myself without unnecessary guilt.'},
+{t:'Small Steps Are Progress',c:'Coping Statement',b:'Progress does not have to be dramatic. Small, repeated actions still count.'},
+{t:'I Have the Courage to Say No',c:'Coping Statement',b:'Saying no can be an act of clarity, safety, and self-respect.'},
+{t:'This Is an Opportunity to Learn to Cope',c:'Coping Statement',b:'Fear can become a place to practice coping rather than a signal that I must always escape.'}
+].map((x,i)=>({...x,id:i+1}));
+
+const state={q:'',cat:'All',favoritesOnly:false,stars:new Set(JSON.parse(localStorage.getItem('dbt-coping-stars')||'[]'))};
+const grid=document.getElementById('cardGrid'), filters=document.getElementById('filters'), search=document.getElementById('searchInput');
+const favCount=document.getElementById('favCount'), visibleCount=document.getElementById('visibleCount'), summaryText=document.getElementById('summaryText');
+const cats=['All',...Array.from(new Set(cards.map(x=>x.c)))];
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function filtered(){return cards.filter(x=>{const hay=(x.t+' '+x.c+' '+x.b.replace(/<[^>]+>/g,'')).toLowerCase(); return (!state.q||hay.includes(state.q.toLowerCase()))&&(state.cat==='All'||x.c===state.cat)&&(!state.favoritesOnly||state.stars.has(x.id));});}
+function renderFilters(){filters.innerHTML=cats.map(c=>`<button class="chip ${state.cat===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join(''); filters.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{state.cat=b.dataset.cat;render();});}
+function render(){renderFilters(); const list=filtered(); favCount.textContent=state.stars.size; visibleCount.textContent=`${list.length} card${list.length===1?'':'s'}`; summaryText.textContent=state.favoritesOnly?'Showing saved cards':(state.cat==='All'?'Browse the full collection':state.cat);
+ if(!list.length){grid.innerHTML='<div class="empty">No cards match this view.</div>';return;}
+ grid.innerHTML=list.map(x=>`<article class="card" id="card-${x.id}" style="--i:${x.id}"><div class="card-head"><div class="badge">${esc(x.c)}</div><button class="star ${state.stars.has(x.id)?'on':''}" data-star="${x.id}" aria-label="${state.stars.has(x.id)?'Remove from saved':'Save'} ${esc(x.t)}">${state.stars.has(x.id)?'Saved':'Save'}</button></div><h2>${esc(x.t)}</h2><div class="body">${x.b}</div><div class="card-footer"><button class="mini" data-copy="${x.id}">Copy</button><button class="mini" data-print="${x.id}">Print card</button></div></article>`).join('');
+ grid.querySelectorAll('[data-star]').forEach(b=>b.onclick=()=>toggleStar(+b.dataset.star)); grid.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyCard(+b.dataset.copy)); grid.querySelectorAll('[data-print]').forEach(b=>b.onclick=()=>printCards([+b.dataset.print])); }
+function toggleStar(id){state.stars.has(id)?state.stars.delete(id):state.stars.add(id); localStorage.setItem('dbt-coping-stars',JSON.stringify([...state.stars])); render(); const c=document.getElementById('favCount'); c.classList.remove('saved-pop'); void c.offsetWidth; c.classList.add('saved-pop');}
+function textOf(x){return `${x.t}\n${x.b.replace(/<[^>]+>/g,'')}`}
+async function copyText(text){
+ try{
+  if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(text);return true;}
+ }catch(e){}
+ try{
+  const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';ta.style.pointerEvents='none';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);const ok=document.execCommand('copy');ta.remove();return ok;
+ }catch(e){return false;}
+}
+async function copyCard(id){const x=cards.find(c=>c.id===id); const ok=await copyText(textOf(x)); toast(ok?'Copied':'Copy failed');}
+async function copyFav(){const list=cards.filter(x=>state.stars.has(x.id)); if(!list.length)return toast('Save a card first'); const ok=await copyText(list.map(textOf).join('\n\n---\n\n')); toast(ok?'Saved cards copied':'Copy failed');}
+function exportFav(){const list=cards.filter(x=>state.stars.has(x.id)); if(!list.length)return toast('Save a card first'); const body=list.map(x=>`<article><small>${esc(x.c)}</small><h2>${esc(x.t)}</h2><p>${x.b}</p></article>`).join(''); const doc=`<!doctype html><meta charset="utf-8"><title>My DBT Coping Cards</title><style>body{font-family:system-ui;margin:32px;color:#18201d}main{max-width:860px;margin:auto}h1{margin-bottom:24px}article{border:1px solid #dfe5e1;border-radius:16px;padding:18px;margin:0 0 14px;break-inside:avoid}small{text-transform:uppercase;letter-spacing:.08em;color:#6a736f}h2{margin:6px 0 8px}p{color:#45504b;line-height:1.55}@media print{body{margin:0}article{page-break-inside:avoid}}</style><main><h1>My DBT Coping Cards</h1>${body}<p style="margin-top:28px;color:#6a736f;font-size:12px">Exported from DBT Coping Cards · Developed by Mind X Associates</p></main>`; const blob=new Blob([doc],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='my-dbt-coping-cards.html'; a.click(); URL.revokeObjectURL(a.href); toast('Exported saved cards');}
+function printCards(ids){const list=cards.filter(x=>ids.includes(x.id)); const w=window.open('','_blank','width=900,height=700'); w.document.write(`<!doctype html><meta charset="utf-8"><title>DBT Coping Card</title><style>body{font-family:system-ui;margin:28px;color:#18201d}.card{border:1px solid #cfd7d3;border-radius:18px;padding:22px;margin-bottom:16px;break-inside:avoid}.cat{color:#69736e;text-transform:uppercase;letter-spacing:.08em;font-size:12px}h2{margin:8px 0 10px}p{line-height:1.55;color:#3f4b46}</style>${list.map(x=>`<div class="card"><div class="cat">${esc(x.c)}</div><h2>${esc(x.t)}</h2><p>${x.b}</p></div>`).join('')}<script>window.onload=()=>window.print()<\/script>`);w.document.close();}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),1600)}
+search.addEventListener('input',e=>{state.q=e.target.value;render()}); document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==search){e.preventDefault();search.focus()}});
+document.getElementById('clearBtn').onclick=()=>{state.q='';state.cat='All';state.favoritesOnly=false;search.value='';render()};
+document.getElementById('favoritesBtn').onclick=()=>{state.favoritesOnly=!state.favoritesOnly;document.getElementById('favoritesBtn').classList.toggle('primary',state.favoritesOnly);render()};
+document.getElementById('copyFavBtn').onclick=copyFav; document.getElementById('exportFavBtn').onclick=exportFav;
+document.getElementById('shuffleBtn').onclick=()=>{const list=filtered(); if(!list.length)return toast('No cards match the current view'); const x=list[Math.floor(Math.random()*list.length)]; const el=document.getElementById('card-'+x.id); if(!el)return; el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); toast('Try this: '+x.t);};
+const themeBtn=document.getElementById('themeBtn'); const savedTheme=localStorage.getItem('dbt-coping-theme'); if(savedTheme==='dark')document.documentElement.dataset.theme='dark'; themeBtn.onclick=()=>{const dark=document.documentElement.dataset.theme==='dark'; document.documentElement.dataset.theme=dark?'':'dark'; localStorage.setItem('dbt-coping-theme',dark?'light':'dark')};
+
+// Friendly quick-navigation controls
+const needButtons=document.querySelectorAll('[data-need]');
+needButtons.forEach(btn=>btn.addEventListener('click',()=>{
+  state.cat=btn.dataset.need; state.q=''; state.favoritesOnly=false; search.value='';
+  document.getElementById('favoritesBtn').classList.remove('primary'); render();
+  document.getElementById('filters').scrollIntoView({behavior:'smooth',block:'center'});
+}));
+const dockSaved=document.getElementById('dockSaved'),dockRandom=document.getElementById('dockRandom'),dockExport=document.getElementById('dockExport');
+if(dockSaved) dockSaved.onclick=()=>document.getElementById('favoritesBtn').click();
+if(dockRandom) dockRandom.onclick=()=>document.getElementById('shuffleBtn').click();
+if(dockExport) dockExport.onclick=()=>document.getElementById('exportFavBtn').click();
+
+render();
+</script>
+</body>
+</html>
